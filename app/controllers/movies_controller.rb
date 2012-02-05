@@ -28,7 +28,9 @@ class MoviesController < ApplicationController
       session[:not_first] = true
       @checked_ratings = {'G'=>1, 'PG'=>1, 'PG-13'=>1, 'R'=>1}
       session[:checked_ratings] = @checked_ratings
-    elsif session[:back] == true && session[:checked_ratings]
+    elsif session[:back] && !params[:index] && session[:checked_ratings]
+      @checked_ratings = session[:checked_ratings]
+    elsif !session[:back] && !params[:index] && session[:checked_ratings]
       @checked_ratings = session[:checked_ratings]
     else
       @checked_ratings = nil
@@ -58,7 +60,7 @@ class MoviesController < ApplicationController
     session[:back] = true
     @movie = Movie.create!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully created."
-    redirect_to movies_path
+    redirect_to movies_path ({:sort => session[:sort], :checked_ratings => session[:checked_ratings]})
   end
 
   def edit
@@ -79,7 +81,7 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
-    redirect_to movies_path
+    redirect_to movies_path ({:sort => session[:sort], :checked_ratings => session[:checked_ratings]})
   end
 
 end
