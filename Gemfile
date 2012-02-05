@@ -5,13 +5,12 @@ gem 'rails', '3.1.0'
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
-# for Heroku deployment - as described in Ap. A of ELLS book
+# for Heroku, replace "gem 'sqlite3'" in your Gemfile with this:
 group :development, :test do
-  gem 'sqlite3'
-  gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'sqlite3' # use SQLite only in development and testing
 end
 group :production do
-  gem 'pg'
+  gem 'pg' # use PostgreSQL in production (Heroku)
 end
 
 # Gems used only for assets and not required

@@ -7,11 +7,35 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-  end
+    if params[:sort]
+      @sort = params[:sort]
+    end
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    @where_statement = ""
+    @not_first = params[:not_first]
+    if params[:ratings]
+      @checked_ratings = params[:ratings]
+    elsif !@not_first
+      @not_first = true
+      @checked_ratings = {'G'=>1, 'PG'=>1, 'PG-13'=>1, 'R'=>1}
+    end
+    where_maker
+    @movies = Movie.where(@where_statement).order(@sort).all
+    end
 
   def new
     # default: render 'new' template
+  end
+
+  def where_maker
+    if @checked_ratings
+      @checked_ratings.keys.each do |rate|
+        @where_statement += "rating = '#{rate}' or "
+      end
+      @where_statement = @where_statement.chop().chop().chop()
+    else
+      @where_statement = "rating = 'NONE EXISTENT'"
+    end
   end
 
   def create

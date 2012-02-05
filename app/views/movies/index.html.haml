@@ -1,13 +1,31 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
 
+= form_tag movies_path, :method => :get do
+  Include: 
+  - @all_ratings.each do |rating|
+    = rating
+    - if @checked_ratings && @checked_ratings.keys.include?(rating)
+      = check_box_tag "ratings[#{rating}]", 1, true
+    - else
+      = check_box_tag "ratings[#{rating}]"
+  = hidden_field_tag :sort, @sort
+  = hidden_field_tag :not_first, true
+  = submit_tag 'Refresh'
+
 %table#movies
   %thead
-    %tr
-      %th Movie Title
-      %th Rating
-      %th Release Date
-      %th More Info
+  %tr
+    - if @sort == "title"
+      %th.hilite= link_to "Movie Title", movies_path({:sort => "title", :ratings => @checked_ratings, :not_first => true})
+    - else
+      %th= link_to "Movie Title", movies_path({:sort => "title", :ratings => @checked_ratings, :not_first => true})
+    %th Ratings
+    - if @sort == "release_date"
+      %th.hilite= link_to "Release Date", movies_path({:sort => "release_date", :ratings => @checked_ratings, :not_first => true})
+    - else
+      %th= link_to "Release Date", movies_path({:sort => "release_date", :ratings => @checked_ratings, :not_first => true})
+    %th More Info
   %tbody
     - @movies.each do |movie|
       %tr
